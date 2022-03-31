@@ -231,24 +231,21 @@ abstract class MicrosoftConfiguration
         }
     }
 
-    private function parseOpenIdConfigsFromJson($config_json) 
-    {   
-        
+    private function parseOpenIdConfigsFromJson($config_json)
+    {
+
         try {
             $data = json_decode($config_json, true);
-            if (!array_key_exists('authorization_endpoint', $data) || 
-                !array_key_exists('token_endpoint', $data) || 
-                !array_key_exists('userinfo_endpoint', $data) || 
-                !array_key_exists('device_authorization_endpoint', $data) || 
-                !array_key_exists('end_session_endpoint', $data) || 
-                !array_key_exists('jwks_uri', $data) || 
+            if (!array_key_exists('authorization_endpoint', $data) ||
+                !array_key_exists('token_endpoint', $data) ||
+                !array_key_exists('end_session_endpoint', $data) ||
+                !array_key_exists('jwks_uri', $data) ||
                 !array_key_exists('issuer', $data)) {
                 throw new \Exception('Invalid configuration');
             }
+
             $this->authorization_endpoint = $data['authorization_endpoint'];
             $this->token_endpoint = $data['token_endpoint'];
-            $this->userinfo_endpoint = $data['userinfo_endpoint'];
-            $this->device_authorization_endpoint = $data['device_authorization_endpoint'];
             $this->end_session_endpoint = $data['end_session_endpoint'];
             $this->jwks_uri = $data['jwks_uri'];
             $this->issuer = $data['issuer'];
@@ -256,8 +253,9 @@ abstract class MicrosoftConfiguration
             $this->id_token_signing_alg_values_supported = isset($data['id_token_signing_alg_values_supported']) ? $data['id_token_signing_alg_values_supported'] : $this->getDefaultSigningAlgValues();
             $this->token_endpoint_auth_signing_alg_values_supported = isset($data['token_endpoint_auth_signing_alg_values_supported']) ? $data['token_endpoint_auth_signing_alg_values_supported'] : $this->getDefaultSigningAlgValues();
         } catch (\Exception $e) {
+            throw $e;
             throw new \Exception('Invalid configuration');
-        } 
+        }
     }
 
     private function getFromUrlOrFile($uri)
